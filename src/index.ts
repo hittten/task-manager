@@ -1,5 +1,4 @@
 import {Task} from "./task";
-import {TASKS} from "./mock-task";
 import {TaskFilter} from "./task-filter";
 
 // Elements
@@ -18,8 +17,18 @@ const completedButton: HTMLButtonElement = document.querySelector('#completedBut
 const filterButtons = [allButton, pendingButton, completedButton];
 
 // Data Functions
+function getData(): Task[] {
+  const tasks = JSON.parse(localStorage.getItem('tasks'));
+
+  return tasks ? tasks: [];
+}
+
+function saveData(tasks: Task[]) {
+  localStorage.setItem('tasks', JSON.stringify(tasks));
+}
+
 function listTasks(filter: TaskFilter): Task[] {
-  const tasks = TASKS;
+  const tasks = getData();
   if (filter === TaskFilter.All) {
     return tasks;
   }
@@ -32,7 +41,7 @@ function listTasks(filter: TaskFilter): Task[] {
 }
 
 function createTask(description: string): Task {
-  const tasks = TASKS;
+  const tasks = getData();
   const newTask: Task = {
     id: tasks.length + 1,
     description: description,
@@ -40,31 +49,34 @@ function createTask(description: string): Task {
   };
 
   tasks.push(newTask);
+  saveData(tasks);
 
   return newTask;
 }
 
 function updateTask(task: Task): Task {
-  const tasks = TASKS;
+  const tasks = getData();
   const index = tasks.findIndex(currentTask => currentTask.id === task.id);
 
   tasks[index] = task;
+  saveData(tasks);
 
   return task;
 }
 
 function deleteTask(task: Task): Task {
-  const tasks = TASKS;
+  const tasks = getData();
   const index = tasks.findIndex(currentTask => currentTask.id === task.id);
   const deletedTask = tasks[index];
 
   tasks.splice(index, 1);
+  saveData(tasks);
 
   return deletedTask;
 }
 
 function tasksLeft(): number {
-  const tasks = TASKS;
+  const tasks = getData();
   return tasks.filter(task => task.done === false).length;
 }
 
@@ -179,3 +191,4 @@ completedButton.onclick = updateFilterButtonsElements;
 // Load
 listTasksElements(taskListElement, listTasks(TaskFilter.All));
 updateTaskLeftElement();
+taskInputElement.focus();
