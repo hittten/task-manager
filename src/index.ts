@@ -23,6 +23,15 @@ function createTask(description: string): Task {
   return newTask;
 }
 
+function updateTask(task: Task): Task {
+  const tasks = TASKS;
+  const index = tasks.findIndex(currentTask => currentTask.id === task.id);
+
+  tasks[index] = task;
+
+  return task;
+}
+
 // HTML Functions
 function listTasksElements(element: HTMLUListElement, tasks: Task[]) {
   tasks.forEach(task => element.appendChild(createTaskElement(task)));
@@ -40,8 +49,28 @@ function createTaskElement(task: Task): HTMLLIElement {
   `;
 
   taskElement.querySelector('span').onclick = () => {
-    // TODO update task
-    console.log('TODO update task description', task.id);
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.value = task.description;
+
+    const updateButton = document.createElement('i');
+    updateButton.className = 'material-icons';
+    updateButton.textContent = 'done';
+
+    updateButton.onclick = () => {
+      const updatedTask = {...task};
+      updatedTask.description = input.value;
+      updateTask(updatedTask);
+
+      const updatedTaskElement = createTaskElement(updatedTask);
+      taskElement.parentElement.insertBefore(updatedTaskElement, taskElement);
+      taskElement.remove();
+    };
+
+    taskElement.appendChild(input);
+    taskElement.appendChild(updateButton);
+
+    taskElement.classList.add('updating');
   };
 
   taskElement.querySelector('i').onclick = () => {
