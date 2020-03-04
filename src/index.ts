@@ -98,9 +98,11 @@ function createTaskElement(task: Task): HTMLLIElement {
     };
   };
 
-  taskElement.querySelector('input').onchange = () => {
-    // TODO update task done
-    console.log('TODO update task done', task.id);
+  taskElement.querySelector('input').onchange = (e) => {
+    const element = e.target as HTMLInputElement;
+    const updatedTask = {...task};
+    updatedTask.done = element.checked;
+    updateTask(updatedTask);
   };
 
   return taskElement;
