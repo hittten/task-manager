@@ -137,3 +137,24 @@ main div.info div {
   align-items: center;
   grid-gap: 10px;
 }
+
+/* Footer */
+footer {
+  margin-top: 15px;
+}
+
+footer p {
+  margin: 5px 0;
+  color: darkgrey;
+  font-size: 10px;
+  text-align: center;
+}
+
+footer p a {
+  color: cadetblue;
+  text-decoration: none;
+}
+
+footer p a:hover {
+  text-decoration: underline;
+}
