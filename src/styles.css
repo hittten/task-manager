@@ -56,3 +56,10 @@ i.material-icons {
   color: lightgrey;
   box-shadow: none;
 }
+
+/* Header */
+header h1 {
+  font-size: 30px;
+  color: darkgrey;
+  text-align: center;
+}
