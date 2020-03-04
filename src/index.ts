@@ -5,6 +5,10 @@ import {TASKS} from "./mock-task";
 const taskListElement: HTMLUListElement = document.querySelector('#taskList');
 const taskInputElement: HTMLInputElement = document.querySelector('#taskInput');
 
+const modalElement: HTMLDivElement = document.querySelector('.modal');
+const modalYesButton: HTMLButtonElement = modalElement.querySelector('button:first-child');
+const modalNoButton: HTMLButtonElement = modalElement.querySelector('button:last-child');
+
 // Data Functions
 function listTasks(): Task[] {
   return TASKS;
@@ -30,6 +34,16 @@ function updateTask(task: Task): Task {
   tasks[index] = task;
 
   return task;
+}
+
+function deleteTask(task: Task): Task {
+  const tasks = TASKS;
+  const index = tasks.findIndex(currentTask => currentTask.id === task.id);
+  const deletedTask = tasks[index];
+
+  tasks.splice(index, 1);
+
+  return deletedTask;
 }
 
 // HTML Functions
@@ -74,8 +88,14 @@ function createTaskElement(task: Task): HTMLLIElement {
   };
 
   taskElement.querySelector('i').onclick = () => {
-    // TODO delete task
-    console.log('TODO delete task', task.id);
+    modalElement.querySelector('p').textContent = task.description;
+    modalElement.classList.add('open');
+
+    modalYesButton.onclick = () => {
+      deleteTask(task);
+      modalNoButton.click();
+      taskElement.remove();
+    };
   };
 
   taskElement.querySelector('input').onchange = () => {
@@ -97,6 +117,10 @@ taskInputElement.onkeyup = (e) => {
 
     taskListElement.appendChild(taskElement);
   }
+};
+
+modalNoButton.onclick = () => {
+  modalElement.classList.remove('open');
 };
 
 // Load
