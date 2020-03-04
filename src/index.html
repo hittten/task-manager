@@ -1,14 +1,103 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Task Manager</title>
-    <link href="styles.css" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Task Manager</title>
+
+  <link href="https://fonts.googleapis.com/css?family=Roboto+Slab:700|Roboto:300,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+        rel="stylesheet">
+  <link href="styles.css" rel="stylesheet">
 </head>
 <body>
+<header>
+  <h1>Administrador de tareas</h1>
+</header>
+<main>
+  <label>
+    <input id="taskInput" type="text" placeholder="¿Qué necesitas hacer?">
+  </label>
+  <ul id="taskList">
+    <li>
+      <div>
+        <input type="checkbox">
+        <span>Esto es una tarea sin hacer</span>
+      </div>
+      <i class="material-icons btn-delete">delete_outline</i>
+    </li>
+    <li>
+      <div>
+        <input type="checkbox" checked>
+        <span>Esto es una tarea hecha</span>
+      </div>
+      <i class="material-icons btn-delete">delete_outline</i>
+    </li>
+    <li>
+      <div>
+        <input type="checkbox">
+        <span>Esto es una tarea de al menos dos lineas, no se que mas poner</span>
+      </div>
+      <i class="material-icons btn-delete">delete_outline</i>
+    </li>
+    <li class="updating">
+      <div>
+        <input type="checkbox">
+        <span>Una tarea en modo edición</span>
+      </div>
+      <i class="material-icons btn-delete">delete_outline</i>
+      <input type="text" value="Una tarea en modo edición">
+      <i class="material-icons">
+        done
+      </i>
+    </li>
+    <li>
+      <div>
+        <input type="checkbox">
+        <span>otra tarea</span>
+      </div>
+      <i class="material-icons btn-delete">delete_outline</i>
+    </li>
+    <li>
+      <div>
+        <input type="checkbox">
+        <span>otra tarea</span>
+      </div>
+      <i class="material-icons btn-delete">delete_outline</i>
+    </li>
+    <li>
+      <div>
+        <input type="checkbox">
+        <span>otra tarea</span>
+      </div>
+      <i class="material-icons btn-delete">delete_outline</i>
+    </li>
+  </ul>
+  <div class="info">
+    <p id="tasksLeft">Quedan 6 tareas</p>
+    <div>
+      <button id="allButton" class="button" disabled>Todas</button>
+      <button id="pendingButton" class="button">Pendientes</button>
+      <button id="completedButton" class="button">Completadas</button>
+    </div>
+  </div>
+</main>
+<footer>
+  <p>Autor: Gilberto López Ambrosino</p>
+  <p>GitHub: <a href="https://github.com/hittten/">https://github.com/hittten/</a></p>
+</footer>
+<div class="modal">
+  <div class="box">
+    <h2>¿Estás seguro de que deseas eliminar esta tarea?</h2>
+    <p>Una tarea para eliminar</p>
+    <div>
+      <button class="button large">Si</button>
+      <button class="button large">No</button>
+    </div>
+  </div>
+</div>
 <script src="bundle.js"></script>
 </body>
 </html>
