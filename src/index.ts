@@ -25,23 +25,36 @@ function createTask(description: string): Task {
 
 // HTML Functions
 function listTasksElements(element: HTMLUListElement, tasks: Task[]) {
-  let html = '';
-
-  tasks.forEach(task => html += createTaskElement(task));
-
-  element.innerHTML = html;
+  tasks.forEach(task => element.appendChild(createTaskElement(task)));
 }
 
-function createTaskElement(task: Task): string {
-  return `
-    <li>
-      <div>
-        <input type="checkbox" ${task.done ? 'checked' : ''}>
-        <span>${task.description}</span>
-      </div>
-      <i class="material-icons btn-delete">delete_outline</i>
-    </li>
-  `
+function createTaskElement(task: Task): HTMLLIElement {
+  const taskElement = document.createElement('li');
+
+  taskElement.innerHTML = `
+    <div>
+      <input type="checkbox" ${task.done ? 'checked' : ''}>
+      <span>${task.description}</span>
+    </div>
+    <i class="material-icons btn-delete">delete_outline</i>
+  `;
+
+  taskElement.querySelector('span').onclick = () => {
+    // TODO update task
+    console.log('TODO update task description', task.id);
+  };
+
+  taskElement.querySelector('i').onclick = () => {
+    // TODO delete task
+    console.log('TODO delete task', task.id);
+  };
+
+  taskElement.querySelector('input').onchange = () => {
+    // TODO update task done
+    console.log('TODO update task done', task.id);
+  };
+
+  return taskElement;
 }
 
 // Events
@@ -53,7 +66,7 @@ taskInputElement.onkeyup = (e) => {
     const taskElement = createTaskElement(task);
     input.value = '';
 
-    taskListElement.innerHTML += taskElement;
+    taskListElement.appendChild(taskElement);
   }
 };
 
