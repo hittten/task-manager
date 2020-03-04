@@ -1,5 +1,6 @@
 import {Task} from "./task";
 import {TASKS} from "./mock-task";
+import {TaskFilter} from "./task-filter";
 
 // Elements
 const taskListElement: HTMLUListElement = document.querySelector('#taskList');
@@ -11,9 +12,23 @@ const modalNoButton: HTMLButtonElement = modalElement.querySelector('button:last
 
 const tasksLeftElement: HTMLParagraphElement = document.querySelector('#tasksLeft');
 
+const allButton: HTMLButtonElement = document.querySelector('#allButton');
+const pendingButton: HTMLButtonElement = document.querySelector('#pendingButton');
+const completedButton: HTMLButtonElement = document.querySelector('#completedButton');
+const filterButtons = [allButton, pendingButton, completedButton];
+
 // Data Functions
-function listTasks(): Task[] {
-  return TASKS;
+function listTasks(filter: TaskFilter): Task[] {
+  const tasks = TASKS;
+  if (filter === TaskFilter.All) {
+    return tasks;
+  }
+  if (filter === TaskFilter.Pending) {
+    return tasks.filter(task => task.done === false);
+  }
+  if (filter === TaskFilter.Completed) {
+    return tasks.filter(task => task.done === true);
+  }
 }
 
 function createTask(description: string): Task {
@@ -55,6 +70,7 @@ function tasksLeft(): number {
 
 // HTML Functions
 function listTasksElements(element: HTMLUListElement, tasks: Task[]) {
+  element.textContent = '';
   tasks.forEach(task => element.appendChild(createTaskElement(task)));
 }
 
@@ -121,6 +137,23 @@ function updateTaskLeftElement() {
   tasksLeftElement.textContent = `Quedan ${tasksLeft()} tareas`;
 }
 
+function updateFilterButtonsElements(e: MouseEvent) {
+  const element = e.target as HTMLButtonElement;
+
+  filterButtons.forEach(button => button.disabled = false);
+  element.disabled = true;
+
+  if (element.id === 'allButton') {
+    listTasksElements(taskListElement, listTasks(TaskFilter.All));
+  }
+  if (element.id === 'pendingButton') {
+    listTasksElements(taskListElement, listTasks(TaskFilter.Pending));
+  }
+  if (element.id === 'completedButton') {
+    listTasksElements(taskListElement, listTasks(TaskFilter.Completed));
+  }
+}
+
 // Events
 taskInputElement.onkeyup = (e) => {
   const input = e.target as HTMLInputElement;
@@ -139,6 +172,10 @@ modalNoButton.onclick = () => {
   modalElement.classList.remove('open');
 };
 
+allButton.onclick = updateFilterButtonsElements;
+pendingButton.onclick = updateFilterButtonsElements;
+completedButton.onclick = updateFilterButtonsElements;
+
 // Load
-listTasksElements(taskListElement, listTasks());
+listTasksElements(taskListElement, listTasks(TaskFilter.All));
 updateTaskLeftElement();
