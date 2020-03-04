@@ -9,6 +9,8 @@ const modalElement: HTMLDivElement = document.querySelector('.modal');
 const modalYesButton: HTMLButtonElement = modalElement.querySelector('button:first-child');
 const modalNoButton: HTMLButtonElement = modalElement.querySelector('button:last-child');
 
+const tasksLeftElement: HTMLParagraphElement = document.querySelector('#tasksLeft');
+
 // Data Functions
 function listTasks(): Task[] {
   return TASKS;
@@ -44,6 +46,11 @@ function deleteTask(task: Task): Task {
   tasks.splice(index, 1);
 
   return deletedTask;
+}
+
+function tasksLeft(): number {
+  const tasks = TASKS;
+  return tasks.filter(task => task.done === false).length;
 }
 
 // HTML Functions
@@ -93,6 +100,7 @@ function createTaskElement(task: Task): HTMLLIElement {
 
     modalYesButton.onclick = () => {
       deleteTask(task);
+      updateTaskLeftElement();
       modalNoButton.click();
       taskElement.remove();
     };
@@ -103,9 +111,14 @@ function createTaskElement(task: Task): HTMLLIElement {
     const updatedTask = {...task};
     updatedTask.done = element.checked;
     updateTask(updatedTask);
+    updateTaskLeftElement();
   };
 
   return taskElement;
+}
+
+function updateTaskLeftElement() {
+  tasksLeftElement.textContent = `Quedan ${tasksLeft()} tareas`;
 }
 
 // Events
@@ -118,6 +131,7 @@ taskInputElement.onkeyup = (e) => {
     input.value = '';
 
     taskListElement.appendChild(taskElement);
+    updateTaskLeftElement();
   }
 };
 
@@ -127,3 +141,4 @@ modalNoButton.onclick = () => {
 
 // Load
 listTasksElements(taskListElement, listTasks());
+updateTaskLeftElement();
