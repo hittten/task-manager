@@ -1,5 +1,6 @@
 import {Task} from "./task";
 import {TaskFilter} from "./task-filter";
+import * as taskService from "./task.service";
 
 // Elements
 const taskListElement: HTMLUListElement = document.querySelector('#taskList');
@@ -15,70 +16,6 @@ const allButton: HTMLButtonElement = document.querySelector('#allButton');
 const pendingButton: HTMLButtonElement = document.querySelector('#pendingButton');
 const completedButton: HTMLButtonElement = document.querySelector('#completedButton');
 const filterButtons = [allButton, pendingButton, completedButton];
-
-// Data Functions
-function getData(): Task[] {
-  const tasks = JSON.parse(localStorage.getItem('tasks'));
-
-  return tasks ? tasks: [];
-}
-
-function saveData(tasks: Task[]) {
-  localStorage.setItem('tasks', JSON.stringify(tasks));
-}
-
-function listTasks(filter: TaskFilter): Task[] {
-  const tasks = getData();
-  if (filter === TaskFilter.All) {
-    return tasks;
-  }
-  if (filter === TaskFilter.Pending) {
-    return tasks.filter(task => task.done === false);
-  }
-  if (filter === TaskFilter.Completed) {
-    return tasks.filter(task => task.done === true);
-  }
-}
-
-function createTask(description: string): Task {
-  const tasks = getData();
-  const newTask: Task = {
-    id: tasks.length + 1,
-    description: description,
-    done: false,
-  };
-
-  tasks.push(newTask);
-  saveData(tasks);
-
-  return newTask;
-}
-
-function updateTask(task: Task): Task {
-  const tasks = getData();
-  const index = tasks.findIndex(currentTask => currentTask.id === task.id);
-
-  tasks[index] = task;
-  saveData(tasks);
-
-  return task;
-}
-
-function deleteTask(task: Task): Task {
-  const tasks = getData();
-  const index = tasks.findIndex(currentTask => currentTask.id === task.id);
-  const deletedTask = tasks[index];
-
-  tasks.splice(index, 1);
-  saveData(tasks);
-
-  return deletedTask;
-}
-
-function tasksLeft(): number {
-  const tasks = getData();
-  return tasks.filter(task => task.done === false).length;
-}
 
 // HTML Functions
 function listTasksElements(element: HTMLUListElement, tasks: Task[]) {
@@ -109,7 +46,7 @@ function createTaskElement(task: Task): HTMLLIElement {
     updateButton.onclick = () => {
       const updatedTask = {...task};
       updatedTask.description = input.value;
-      updateTask(updatedTask);
+      taskService.updateTask(updatedTask);
 
       const updatedTaskElement = createTaskElement(updatedTask);
       taskElement.parentElement.insertBefore(updatedTaskElement, taskElement);
@@ -127,7 +64,7 @@ function createTaskElement(task: Task): HTMLLIElement {
     modalElement.classList.add('open');
 
     modalYesButton.onclick = () => {
-      deleteTask(task);
+      taskService.deleteTask(task);
       updateTaskLeftElement();
       modalNoButton.click();
       taskElement.remove();
@@ -138,7 +75,7 @@ function createTaskElement(task: Task): HTMLLIElement {
     const element = e.target as HTMLInputElement;
     const updatedTask = {...task};
     updatedTask.done = element.checked;
-    updateTask(updatedTask);
+    taskService.updateTask(updatedTask);
     updateTaskLeftElement();
   };
 
@@ -146,7 +83,7 @@ function createTaskElement(task: Task): HTMLLIElement {
 }
 
 function updateTaskLeftElement() {
-  tasksLeftElement.textContent = `Quedan ${tasksLeft()} tareas`;
+  tasksLeftElement.textContent = `Quedan ${taskService.tasksLeft()} tareas`;
 }
 
 function updateFilterButtonsElements(e: MouseEvent) {
@@ -156,13 +93,13 @@ function updateFilterButtonsElements(e: MouseEvent) {
   element.disabled = true;
 
   if (element.id === 'allButton') {
-    listTasksElements(taskListElement, listTasks(TaskFilter.All));
+    listTasksElements(taskListElement, taskService.listTasks(TaskFilter.All));
   }
   if (element.id === 'pendingButton') {
-    listTasksElements(taskListElement, listTasks(TaskFilter.Pending));
+    listTasksElements(taskListElement, taskService.listTasks(TaskFilter.Pending));
   }
   if (element.id === 'completedButton') {
-    listTasksElements(taskListElement, listTasks(TaskFilter.Completed));
+    listTasksElements(taskListElement, taskService.listTasks(TaskFilter.Completed));
   }
 }
 
@@ -171,7 +108,7 @@ taskInputElement.onkeyup = (e) => {
   const input = e.target as HTMLInputElement;
   if (e.key === 'Enter' && input.value) {
     input.focus();
-    const task = createTask(input.value);
+    const task = taskService.createTask(input.value);
     const taskElement = createTaskElement(task);
     input.value = '';
 
@@ -189,6 +126,6 @@ pendingButton.onclick = updateFilterButtonsElements;
 completedButton.onclick = updateFilterButtonsElements;
 
 // Load
-listTasksElements(taskListElement, listTasks(TaskFilter.All));
+listTasksElements(taskListElement, taskService.listTasks(TaskFilter.All));
 updateTaskLeftElement();
 taskInputElement.focus();
